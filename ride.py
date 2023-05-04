@@ -1,44 +1,28 @@
-from flask import Flask, jsonify, request
-import redis
-import uuid
+from flask import Flask, request
 import json
 
 app = Flask(__name__)
-cache = redis.Redis(host='localhost', port=6379)
 
-@app.route('/ride_request', methods=['POST'])
-def request_ride():
-    # Generate a unique ride ID
-    ride_id = str(uuid.uuid4())
 
-    # Get ride request data from the request
-    data = request.json
-    user_id = data['user_id']
-    start_location = data['start_location']
-    end_location = data['end_location']
-    ride_type = data['ride_type']
+@app.route('/requests', methods=['POST'])
+def create_request():
+    # create ride request logic
+    ride_request = {'user_id': request.json['user_id'], 'driver_id': request.json['driver_id']}
 
-    # Cache the ride request data
-    ride_data = {
-        'user_id': user_id,
-        'start_location': start_location,
-        'end_location': end_location,
-        'ride_type': ride_type
-    }
-    cache.set(ride_id, json.dumps(ride_data))
+    # save ride request to file
+    with open('ride_requests.txt', 'a') as f:
+        f.write(json.dumps(ride_request) + '\n')
 
-    # Return the ride ID to the user
-    return jsonify({'ride_id': ride_id})
+    return json.dumps(ride_request)
 
-@app.route('/ride_request/<ride_id>', methods=['GET'])
-def get_ride_request(ride_id):
-    # Get the ride request data from the cache
-    ride_data = cache.get(ride_id)
-    if ride_data is None:
-        return jsonify({'error': 'Ride request not found'}), 404
 
-    # Return the ride request data to the user
-    return jsonify(json.loads(ride_data))
+@app.route('/requests/<int:request_id>', methods=['GET'])
+def get_request(request_id):
+    # get ride request logic
+    ride_request = {'id': request_id, 'user_id': 1, 'driver_id': 1}
+
+    return json.dumps(ride_request)
+
 
 if __name__ == '__main__':
     app.run(debug=True)
