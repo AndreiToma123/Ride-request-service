@@ -19,7 +19,7 @@ def create_user():
 @app.route('/users/<int:user_id>', methods=['GET'])
 def get_user(user_id):
     # get user logic
-    user = {'id': user_id, 'username': 'example', 'email': 'example@example.com'}
+    user = {'id': user_id, 'username': 'example', 'email': 'example@mail.com'}
 
     return json.dumps(user)
 
