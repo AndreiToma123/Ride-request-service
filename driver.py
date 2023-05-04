@@ -19,7 +19,7 @@ def create_driver():
 @app.route('/drivers/<int:driver_id>', methods=['GET'])
 def get_driver(driver_id):
     # get driver logic
-    driver = {'id': driver_id, 'name': 'example', 'license': 'ABC123'}
+    driver = {'id': driver_id, 'name': 'exampleName', 'license': 'exampleLicense'}
 
     return json.dumps(driver)
 
